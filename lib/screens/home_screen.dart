@@ -1,41 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_bloc/api/api_services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_with_bloc/bloc/todo_bloc.dart';
+import 'package:todo_with_bloc/bloc/todo_event.dart';
+import 'package:todo_with_bloc/bloc/todo_state.dart';
 import 'package:todo_with_bloc/screens/add_screen.dart';
 import 'package:todo_with_bloc/widgets/list_view.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<dynamic> complete = [];
-  List<dynamic> inComplete = [];
-  List<dynamic> allData = [];
-  bool isLoading = false;
-  Future<void> getAllTodo() async {
-    setState(() => isLoading = true);
-
-    final result = await ApiServices().getAllTodo();
-
-    final todos = result.items ?? [];
-    allData = todos.toList();
-    complete = todos.where((todo) => todo.isCompleted == true).toList();
-    inComplete = todos.where((todo) => todo.isCompleted == false).toList();
-
-    setState(() => isLoading = false);
-  }
-
-  @override
-  void initState() {
-    getAllTodo();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    context.read<TodoBloc>().add(FetchTodos());
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -49,28 +25,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : TabBarView(
-                children: [
-                  CustomListView(
-                    todoList: allData,
-                  ),
-                  CustomListView(
-                    todoList: complete,
-                  ),
-                  CustomListView(
-                    todoList: inComplete,
-                  ),
-                ],
-              ),
+        body: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
+          if (state is TodoLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is TodoLoaded) {
+            return TabBarView(
+              children: [
+                CustomListView(todoList: state.todos),
+                CustomListView(
+                    todoList:
+                        state.todos.where((todo) => todo.isCompleted).toList()),
+                CustomListView(
+                    todoList: state.todos
+                        .where((todo) => !todo.isCompleted)
+                        .toList()),
+              ],
+            );
+          } else if (state is TodoError) {
+            return Center(child: Text(state.message));
+          } else {
+            return const Center(child: Text("No data"));
+          }
+        }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddScreen()),
+              MaterialPageRoute(builder: (context) => AddScreen()),
             );
           },
           backgroundColor: const Color.fromARGB(255, 37, 88, 83),

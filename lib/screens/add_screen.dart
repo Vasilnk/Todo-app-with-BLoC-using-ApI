@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_bloc/api/api_services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_with_bloc/bloc/todo_bloc.dart';
+import 'package:todo_with_bloc/bloc/todo_event.dart';
 
 class AddScreen extends StatefulWidget {
   const AddScreen({super.key});
@@ -80,12 +82,10 @@ class _AddScreenState extends State<AddScreen> {
                     ),
                   );
 
-                  ApiServices().addTodo(titleController.text.toString(),
-                      descriptionController.text.toString(), isComplete);
-                  //     .then((value) {})
-                  //     .onError((error, stackTrace) {
-                  //   print(error.toString());
-                  // });
+                  BlocProvider.of<TodoBloc>(context).add(
+                    AddTodo(titleController.text, descriptionController.text,
+                        isComplete),
+                  );
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

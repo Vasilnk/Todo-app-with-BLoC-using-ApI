@@ -29,7 +29,7 @@ class ApiServices {
       print('Request success');
       return TodoModel.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Error');
+      throw Exception('Failed to add todo: ${response.statusCode}');
     }
   }
 }
