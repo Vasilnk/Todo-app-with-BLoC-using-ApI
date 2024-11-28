@@ -14,7 +14,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         final reversedTodos = (result.items ?? []).reversed.toList();
         emit(TodoLoaded(reversedTodos));
       } catch (e) {
-        emit(TodoError('Failed to fetch todos'));
+        emit(const TodoError('Failed to fetch todos'));
       }
     });
 

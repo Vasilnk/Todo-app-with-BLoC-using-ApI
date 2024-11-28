@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddScreen()),
+              MaterialPageRoute(builder: (context) => const AddScreen()),
             );
           },
           backgroundColor: const Color.fromARGB(255, 37, 88, 83),

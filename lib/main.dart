@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_with_bloc/api/api_services.dart';
 import 'package:todo_with_bloc/bloc/todo_bloc.dart';
-import 'package:todo_with_bloc/screens/home_screen.dart';
+import 'package:todo_with_bloc/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
               backgroundColor: Color.fromARGB(255, 37, 88, 83),
               titleTextStyle: TextStyle(
                   color: Colors.white,
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold),
               centerTitle: true),
           tabBarTheme: const TabBarTheme(
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
